@@ -1,0 +1,209 @@
+use empregados;
+
+select sobrenome, dta_inicio, salario
+from tb_empregado
+where salario between 600 and 799.99;
+
+select idt, nome, cargo, salario
+from tb_empregado
+where salario not between 700.01 and 849.99;
+# where salario between 0 and 600 or salario >= 800;
+# where salario <= 600 or salario >= 800;
+
+select nome, dta_inicio
+from tb_empregado
+where dta_inicio like '2019-__-__'
+-- where dta_inicio between '20190101' and '20191231'
+order by dta_inicio desc;
+
+select nome
+from tb_empregado
+where nome between 'f' and 'n';
+-- SINTAXE → where nome between 'letra inicial' and 'letra final + 1';
+
+select nome
+from tb_empregado
+where nome like "a%";
+
+select nome
+from tb_empregado
+where nome not like "a%";
+
+select nome
+from tb_empregado
+where nome like "a%o";
+-- where nome like "a%" and nome like "%o";
+
+select nome
+from tb_empregado
+where nome like "a%" or nome like "e%" or nome like "i%" or nome like "o%" or nome like "u%";
+
+select nome
+from tb_empregado
+where not (nome like "a%" or nome like "e%" or nome like "i%" or nome like "o%" or nome like "u%");
+-- where nome not like "a%" or nome not like "e%" or nome not like "i%" or nome not like "o%" or nome not like "u%";
+
+select nome
+from tb_empregado
+where cargo like '%tele%';
+
+select nome
+from tb_empregado
+where cargo like 'T%' and salario > 650;
+
+select nome
+from tb_empregado
+where sobrenome like '_____';
+
+select *
+from tb_empregado
+where nome like "__r%";
+
+select nome, cargo, salario
+from tb_empregado
+where nome like "%i%";
+
+select nome, cargo, salario
+from tb_empregado
+where nome like "%a%i%" and nome not like "i%a%i";
+
+select nome, cargo, salario
+from tb_empregado
+where nome like "%i%a%" and nome not like "a%i%a";
+
+select nome, cargo, salario
+from tb_empregado
+where nome like "%i%a" or nome like "%a%i";
+-- where nome like "%i%" and nome like "%a%";
+
+select sobrenome, cod_dept as 'Codigo do Departamento', salario, salario*12 as salario_anual
+from tb_empregado
+where salario*12 > 6500
+order by cod_dept, salario;
+-- order by 2, 3;
+-- order by cod_dept, salario_anual;
+-- order by salario_anual, 'Codigo do Departamento';
+
+select sobrenome, cod_dept as 'Codigo do Departamento', salario, salario*12 as salario_anual
+from tb_empregado
+where salario*12 > 6500
+-- where salario_anual > 6500;
+order by salario_anual desc;
+-- order by 4 desc;
+-- order by salario * 12 desc;
+
+
+-- select nome, salario, cargo, pct_comissao,
+-- 	   salario * pct_comissao/100 as 'em reais sem formatar',
+--        round (salario * pct_comissao/100, 2) as 'em reais com round',
+--        format (salario * pct_comissao/100, 2) as 'em reais com format',
+--        cast (salario * pct_comissao/100 as decimal(8,2)) as 'em reais com cast'
+-- from tb_empregado;
+
+
+select nome, salario, cargo, pct_comissao,
+salario * pct_comissao/100 as 'em reais sem formatar',
+format (salario * pct_comissao/100, 2) as 'em reais com format'
+from tb_empregado;
+
+select nome, salario, cargo, pct_comissao,
+round (salario * pct_comissao/100, 2) as 'em reais com round'
+from tb_empregado;
+
+-- select nome, salario, cargo, pct_comissao,
+-- cast (salario * pct_comissao/100 as decimal(8,2)) as 'em reais com cast'
+-- from tb_empregado; #NÃO ESTÁ FUNCIONANDO COM CAST
+
+select nome, salario, cargo, concat(pct_comissao, "%"), # concat = mostrar simbolo de porcentagem
+	if (pct_comissao is null, 0, salario * pct_comissao/100)
+from tb_empregado;
+
+select nome, salario, cargo, concat(pct_comissao, "%"),
+    if (pct_comissao is null, 0, round (salario * pct_comissao/100, 2)) as com_round
+from tb_empregado;
+
+select nome, salario, cargo, concat(pct_comissao, "%"),
+    format(salario * pct_comissao/100, 2) as com_format
+from tb_empregado;
+
+-- select nome, salario, cargo, concat(pct_comissao, "%"),
+--     if (salario * pct_comissao/100 as decimal(8,2)) as com_cast
+-- from tb_empregado; # TAMBÉM NÃO ESTÁ FUNCIONAND COM CAST
+
+select nome, salario, cargo, concat(pct_comissao, "%"), # concat = mostrar simbolo de porcentagem
+	if (pct_comissao is null, 0, salario * pct_comissao/100)
+from tb_empregado
+where pct_comissao is not null;
+
+select nome, salario, cargo, concat(pct_comissao, "%"),
+    if (pct_comissao is null, 0, round (salario * pct_comissao/100, 2)) as com_round
+from tb_empregado
+where pct_comissao is not null;
+
+select nome, salario, cargo, concat(pct_comissao, "%"),
+    format(salario * pct_comissao/100, 2) as com_format
+from tb_empregado
+where pct_comissao is not null;
+
+-- select nome, salario, cargo, concat(pct_comissao, "%"),
+--     if (salario * pct_comissao/100 as decimal(8,2)) as com_cast
+-- from tb_empregado
+-- where pct_comissao is not null; # TAMBÉM NÃO ESTÁ FUNCIONAND COM CAST
+
+select identidade, sobrenome, salario, pct_comissao, (salario * pct_comissao/100) as 'valor comissao'
+from tb_empregado
+where cargo = 'teleatendimento' and salario * pct_comissao >= 40
+order by 5;
+-- order by 'valor comissao';
+
+select nome, cod_dept, salario,
+	round (salario * 1.125, 2) as 'novo_salario'
+from tb_empregado
+order by nome;
+
+select nome, salario, pct_comissao, format (salario * pct_comissao/100, 2) as 'valor comissao'
+from tb_empregado
+where salario * pct_comissao/100 > 50;
+
+select nome, cod_dept, salario as 'salario antigo', format (salario * 1.125, 2) as 'novo salario'
+from tb_empregado;
+
+select nome, cod_dept, salario, pct_comissao as '% de comissão', format (salario * pct_comissao/100, 2) as 'rendimento',
+if (pct_comissao is null, round(salario,2), round(salario + salario * pct_comissao/100, 2)) as 'rendimento'
+from tb_empregado
+where cod_dept in (31976427, 31976428)
+-- where cod_dept = 31976427 or cod_dept = 31976428
+-- where cod_dept between 31976427 and 31976428
+order by  cod_dept, 'rendimento' desc;
+
+select nome, sobrenome
+from tb_empregado
+where cod_dept = 31976427
+order by 1;
+-- ordey by nome;
+-- fazer com concatenação → 
+select concat(nome, ' ', sobrenome) as 'Nome Completo'
+from tb_empregado
+where cod_dept = 31976427
+order by 1;
+
+select concat('O(A) ', nome, ' é do(a) ', cargo, ' da empresa')
+from tb_empregado;
+
+select concat(sobrenome, ' (', cargo, ')') as 'Sobrenome e Cargo'
+from tb_empregado;
+
+select concat(sobrenome, ' (', cargo, ')') as Relacao
+from tb_empregado
+order by 1;
+-- order by Relacao;
+-- order by cargo;
+-- order by cargo, sobrenome;
+
+select concat('O(A) ', nome, ' ', sobrenome, ' tem salário de R$', salario) as 'Nome / Salário'
+from tb_empregado;
+
+select concat('O(A) ', nome, ' ', sobrenome, ' tem salário de R$', salario, 
+' e com um aumento de 12.5% terá R$', format (salario * 1.125, 2)) as 'Nome / Salário / Aumento'
+from tb_empregado
+order by nome;
