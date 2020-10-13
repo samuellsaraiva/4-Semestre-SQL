@@ -1,0 +1,120 @@
+create database empregados;
+use empregados;
+drop database empregados;
+
+create table if not exists tb_empregado(
+    identidade int primary key not null unique,
+    nome varchar (45) not null,
+    sobrenome varchar (45) not null,
+    dta_nascimento date not null,
+    dta_inicio date not null,
+    cod_gerente int not null,
+    cod_dept int not null,
+    cargo varchar (45) not null,
+    salario decimal (9, 2) not null,
+    pct_comissao decimal (5,1) null
+);
+
+insert into tb_empregado
+values (3629305, 'Samuel',   'Saraiva',  19990131, 20190107, 19738246, 31976428, 'Teleatendimento', 480, null),
+	   (1234567, 'Hericlys', 'Barbosa',  20001208, 20200202, 19738246, 31976427, 'TI',              650, 10  ),
+	   (4567891, 'Julia',    'Yumi',     20000514, 20200101, 19738242, 31976426, 'RH',              500, 2   ),
+	   (9876543, 'Isabella', 'Calazans', 20000607, 20190615, 19738240, 31976425, 'Portaria',        800, null),
+	   (6549871, 'Pietro',   'Maciel',   19980421, 20200601, 19738246, 31976427, 'TI',              800, 12  );
+
+-- exercícios
+
+select * from tb_empregado;
+
+select nome, cargo, salario
+from tb_empregado;
+
+select nome, cargo, salario
+from tb_empregado
+order by cargo, salario;
+
+select distinct cargo
+from tb_empregado
+order by cargo desc;
+
+select idt, nome, dta_inicio, salario
+from tb_empregado
+where salario > 2000;
+
+select cod_dept, sobrenome as Sobrenome, Salario
+from tb_empregado
+where cod_dept = '31976427' and salario > 700;
+
+select sobrenome, dta_inicio, salario
+from tb_empregado
+where salario >= 600 and salario < 1000;
+
+select idt, nome, sobrenome, cargo, salario
+from tb_empregado
+where salario < 600 or salario >= 700;
+
+select idt, nome, sobrenome, cargo, salario
+from tb_empregado
+where salario < 600 or salario >= 700
+order by dta_inicio;
+
+select *
+from tb_empregado
+where cargo = 'TI' or cod_dept = '31976426';
+
+select *
+from tb_empregado
+where cod_dept = '31976427' and salario >= 650 or cod_dept = '31976426';
+
+select *
+from tb_empregado
+where (cod_dept = '31976427' or cod_dept = '31976426') and salario > 450;
+
+select *
+from tb_empregado
+where salario > 450 and (cargo = 'teleatendimento' or cod_dept = '31976427');
+
+select sobrenome, dta_inicio
+from tb_empregado
+where pct_comissao = 0;
+
+select salario, cargo, cod_dept
+from tb_empregado
+where salario > 600 and (cargo = 'TI' or cod_dept = '31976426');
+
+select sobrenome, dta_inicio, pct_comissao
+from tb_empregado
+where pct_comissao is null;
+
+select idt, nome, cargo
+from tb_empregado
+where cargo = 'teleatendimento' or cargo = 'TI';
+# where cargo in ('teleatendimento' or 'TI');
+
+select nome, sobrenome
+from tb_empregado
+where cod_gerente is null;
+
+select sobrenome, cod_dept
+from tb_empregado
+where cod_dept <> '31976426'
+# where cod_dept != 31976426
+# where not cod_dept = 31976426
+# where cod_dept not in ('31976426')
+# where not cod_dept in ('31976426')
+order by cod_dept, sobrenome;
+
+select nome, dta_inicio, cod_dept
+from tb_empregado
+where dta_inicio > 20190321;
+# where dta_inicio > 2019-03-21;
+# where dta_inicio > 2019/03/21;
+
+select nome, dta_inicio
+from tb_empregado
+where dta_inicio > 20181231 and dta_inicio < 20200101
+order by dta_inicio desc;
+
+select nome, salario, cod_dept
+from tb_empregado
+where cod_gerente = '19738242';
