@@ -1,1 +1,208 @@
+use empregados;
 
+/* E----------------X--------------E---------------M----------------P----------------L-----------------O------------------S */
+select * from tb_empregado
+-- where REGEXP_LIKE (nome, 'a')
+-- where RLIKE ('a')
+-- where REGEXP ('a')
+where nome REGEXP 'a';                     #case insensitive
+
+select * from tb_empregado
+-- where nome regexp BINARY ('f')
+-- where nome rlike BINARY ('f')
+where REGEXP_LIKE(nome, 'f', 'c');         #case sensitive
+/* E----------------X--------------E---------------M----------------P----------------L-----------------O------------------S */
+
+
+/* 1-) Refaça 2, 3. Selecione o nome e a data de contratação dos funcionários
+contratados no ano de 2015. Classifique por data de contratação em ordem crescente */
+select nome, dta_inicio
+from tb_empregado
+where dta_inicio rlike '^(2015)'
+order by 2 desc;
+
+
+/* 2-) Refaça 2, 4. Selecione os registros cujos nomes comecem por uma das letras
+dentro do intervalo de 'c' até 'm'. Resolva de duas formas */
+select nome
+from tb_empregado
+-- where nome rlike '^[c-m]'
+where nome between 'c' and 'm'
+order by nome asc;
+
+
+/* 3-) Selecione os registros cujos nomes comecem pela letra 'a' */
+select nome
+from tb_empregado
+where nome rlike '^(a)'
+order by nome asc;
+
+/* 4-) Selecione os registros cujo nome comece pela letra 'A' maiúscula */
+select nome
+from tb_empregado
+where nome rlike BINARY '^(A)'
+-- where  regexp_like (nome, 'A', 'c')
+order by nome asc;
+
+
+ /* 5-) Selecione os registros cujo nome não comecem pela letra 'a'. Resolva de três formas */
+select nome
+from tb_empregado
+-- where nome not rlike '^(a)'
+-- where nome rlike '^([^a])'
+where nome rlike '^([b-z])'
+order by nome asc;
+
+
+/* 6-) Selecione os registros cujo nome termine com 'a' */
+select nome
+from tb_empregado
+where nome rlike '(a)$'
+order by nome asc;
+
+
+/* 7-) Selecione os registros cujo nome comece pela sequência 'an' */
+select nome
+from tb_empregado
+where nome rlike '^(an)'
+order by nome asc;
+
+
+/* 8-) Selecione os registros cujo nome comece pela letra 'a' ou pela letra 'n' */
+select nome
+from tb_empregado
+-- where nome rlike '^[an]'
+-- where nome rlike '^[a|n]'
+where nome not rlike '^[b-m|o-z]'
+order by nome asc;
+
+
+/* 9-) Selecione os registros que comecem pela letra 'a' e termine pela letra 'o' */
+select nome
+from tb_empregado
+-- where nome rlike '^(a)' and nome rlike'(o)$;'
+where nome like 'a%o';
+
+
+/* 10-) Selecione os registros cujo nome terminem com a letra 'a' ou 'o'. Resolva de 3 formas */
+select nome
+from tb_empregado
+-- where nome rlike '(o)$'
+-- where nome not rlike '[b-mp-z]$'
+where nome rlike '(o|a)$'
+order by nome asc;
+
+
+/* 11-) Selecione os registros cujo nome comece por vogal. Resolva de 3 formas */
+select nome
+from tb_empregado
+where nome rlike '^(a|e|i|o|u)'
+-- where nome not rlike '^[b-df-hj-np-tv-z]'
+-- where nome rlike '^[aeiou]'
+order by nome asc;
+
+
+/* 12-) Selecione os registros cujo nome comece por consoante. Resolva de 3 formas */
+select nome
+from tb_empregado
+-- where nome rlike '^[aeiou]'
+-- where nome not rlike '^(a|e|i|o|u)'
+where nome rlike '^[b-	df-hj-np-tv-z]'
+order by nome asc;
+
+
+/* 13-) Selecione os funcionários que tenham 'vend' fazendo parte do cargo */
+select nome, cargo
+from tb_empregado
+where cargo rlike '(vend)'
+order by cargo asc;
+
+
+/* 14-) Selecione os funcionários que tenham 'dir' fazendo parte da descrição do cargo e que ganham mais de 2430 */
+select nome, cargo, salario
+from tb_empregado
+where cargo rlike '(dir)' and salario > 2430
+-- where cargo like '%dir%' and salario > 2430
+order by cargo asc;
+
+
+/* 15-) Selecione os funcionários que tenham sobrenome com cinco letras. Resolva de 3 formas */
+select nome, sobrenome
+from tb_empregado
+where sobrenome like '___';
+-- where sobrenome rlike '^.....$';
+-- where sobrenome rlike '^.{5}$';
+
+
+/* 16-) Seleciona os funcionários que tenham a letra 'r' na terceira posição do nome. Resolva de 3 formas */
+select nome
+from tb_empregado
+where nome like '__r%'
+-- where nome rlike '(^..r)'
+-- where nome rlike '(^.{2}r)'
+order by nome asc;
+
+
+/* 17-) Selecione o nome, o cargo e o salário dos funcionários que tenham a letra 'i' em qualquer posição do nome */
+select nome
+from tb_empregado
+where nome like 'i%' or nome like '%i%' or nome like '%i'
+-- where nome rlike '(i)'
+order by nome asc;
+
+
+/* 18-) Selecione o nome, cargo e o salário dos funcionários que tenham letras 'a' e 'i' em qualquer posição de seu nome.
+A letra 'a' deve vir antes da letra 'i'. Resolva de 3 formas */
+select nome, cargo, salario
+from tb_empregado
+where nome like '%a%i%';
+-- where nome rlike '(a.*i)' and nome not rlike '(i.*a.*i)';
+-- where nome rlike '(a.*i)';
+
+
+/* 19-) Selecione o nome, cargo e o salário dos funcionários que tenham a letra 'i' e 'a' em qualquer posição de seu nome. 
+A letra 'i' deve vir antes da letra 'a'. Resolva de 3 formas */
+select nome, cargo, salario
+from tb_empregado
+where nome rlike '(i.*a)' and nome not rlike '(a.*i.*a)';
+-- where nome rlike '^[^a]*i.*a';
+-- where nome rlike '^([b-z]*i.*a)';
+
+
+/* 20-) Selecione o nome, cargo e o salário dos funcionários que tenham as letas 'a' e 'i' em qualquer posição do nome.
+Não importa qual letra vem primeiro.  Resolva de 3 formas */
+select nome, cargo, salario
+from tb_empregado
+where nome rlike 'a.*i' or nome rlike 'i.*a';
+-- where nome like '%a%i%';
+-- where nome regexp 'i[a-z]*a' or nome rlike 'a[a-z]*i';
+-- where nome rlike 'a' and nome rlike 'i';
+
+
+
+/* ----------------------------------------------------------------------------------------------------------------------- */
+												/* Outros meta caracteres */
+/* ----------------------------------------------------------------------------------------------------------------------- */
+
+
+/* 1-) Padrão de número de telefone com oito dígitos. Resolva de 2 formas. Testes: 1234567, 123456789 */
+select 123456789 rlike ('^\\d{8}$') as Teste;
+select 123456789 rlike ('^[0-9]{8}$') as Teste;
+
+
+/* 2-) PAdrão de número de telefone com oito dígitos ou com nove dígitos. Resolva de 2 formas. Testes: 1234567, 1234567890 */
+select 1234567890 rlike ('^[0-9]{8,9}$') as Teste;
+select 1234567890 rlike ('^\\d{8,9}$') as Teste;
+
+
+/* 3-) Padrão de número de telefone com oito dígitos ou com nove dígitos e o primeiro não pode ser 0.
+Resolva de 2 formas. Testes: 01234567, 012345678, a1234567, 12345678 */
+select '123456789' rlike '^[^0]{8,9}$';
+select '123456789' rlike ('^[1-9]\\d{7,8}$');
+
+
+/* 4-) Padrão de número de telefone separado com hífe. Com hífen antes dos quatro últimos dígitos. 
+Resolva de 2 formas. Teste falso: 12345678 */
+select '1234-5678' rlike ('^[1-9]\\d{3,4}-\\d{4}$');
+select '1234-5678' rlike ('^[1-9]\\d{3,4}-?\\d{4}$')
+order by nome asc;
