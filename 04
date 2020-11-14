@@ -1,0 +1,190 @@
+use empregados;
+
+-- Funções string (string functions):
+
+/* 1.a. Recupere o nome de todos os cargos da empresa com a respectiva quantidade
+de caracteres em cada cargo. Classifique por ordem alfabética de cargo e evite
+repetição. */
+select distinct cargo, length(cargo) as tamanho
+from tb_empregado
+order by cargo;
+
+
+/* 1.b. Refaça. Selecione os funcionários que tenham o sobrenome com cinco letras. */
+select sobrenome
+from tb_empregado
+where length(sobrenome) = 5;
+
+
+/* 2. Mostre o nome em minúsculo e o sobrenome em maiúsculo de todos os funcionários. */
+select lower(nome) as nome_minusculo, upper(sobrenome) as sobrenome_maiusculo
+from tb_empregado;
+
+
+/* 3. Mostre o sobrenome e as três primeiras letras do cargo concatenado pelo caractere 
+‘/’. Layout: Sobrenome/Car. Resolva de duas formas. */
+-- select concat(sobrenome, '/ ', left(cargo, 3)) as sobrenome_cargo
+select concat(sobrenome, '/ ', substring(cargo, 1, 3)) as sobrenome_cargo
+from tb_empregado;
+
+
+/* 4. Mostre a identidade, o nome como está armazenado na base de dados e o nome com
+a primeira letra em maiúsculo e as restantes em minúsculo. Resolva de duas formas. */
+select identidade, nome, concat(upper(substring(nome, 1, 1)), lower(substring(nome, 2))) as modded
+-- select identidade, nome, concat(substring(upper(nome), 1, 1), substring(lower(nome), 2))
+-- select identidade, nome, concat(upper(left(nome, 1)), lower(right(nome, length(nome) -1)))
+from tb_empregado
+order by nome;
+
+
+/* 5. Vamos supor que os funcionários da empresa sejam todos escritores e que o cargo
+deles seja o título do livro. Crie uma consulta para gerar uma relação bibliográfica
+seguindo o padrão ABNT. Padrão ABNT: SOBRENOME, Nome. Título.
+Adaptado pra tabela tb_empregado: SOBRENOME, Nome. Cargo. */
+select concat(upper(sobrenome), ', ', nome, '. ', cargo, '.')
+from tb_empregado
+order by nome;
+-- VER ERRO DEPOIS NA GRAVAÇÃO
+
+
+
+
+-- Funções com data (date functions):
+
+/* 6. a. Recupere a data e hora do sistema operacional. */
+select now(), current_timestamp();
+
+
+/* 6.b. Recupere somente a data atual */
+select curdate(), current_date();
+ 
+
+/* 6.c. Recupere somente a hora atual */
+select curtime(), current_time;
+
+
+/* 7. Refaça. Selecione o nome e a data de contratação dos funcionários contratados
+no ano de 2015. Classifique por data de contratação em ordem decrescente. Resolva
+de três maneiras. */
+select nome
+from tb_empregado
+where year (dta_inicio) = 2015
+-- where left(dta_inicio, 4) = 2015
+-- where substring(dta_inicio, 1, 4) = 2015
+order by dta_inicio desc;
+
+
+/* 8. Mostre os funcionários que nasceram em outubro. */
+select nome, dta_nascimento
+from tb_empregado
+where month (dta_nascimento) = 1;
+
+
+/* 9. Relacione os funcionários aniversariantes deste mês, ou seja, do mês atual.
+Mostre o nome e a data de nascimento. */
+select nome, dta_nascimento
+from tb_empregado
+where month (dta_nascimento) = month(curdate());
+
+
+/* 10. Refaça a exercício anterior classificando a pesquisa por ordem crescente do
+dia do aniversário. */
+select nome, dta_nascimento
+from tb_empregado
+where month (dta_nascimento) = month(curdate())
+order by day (dta_nascimento);
+
+/* 11. Algumas pessoas não gostam de revelar a idade. Por isso, melhore o relatório
+anterior trazendo apenas o nome do funcionário e o dia do aniversário. */
+select nome, day(dta_nascimento)
+from tb_empregado
+where month (dta_nascimento) = month(curdate())	
+order by day (dta_nascimento);
+
+
+/* 12. Vamos aumentar a relação de aniversariantes. Agora, o chefe de recursos
+humanos quer um relatório com os aniversariantes do mês atual e do próximo
+mês, ou seja, desses dois meses. Classifique pela data de nascimento.
+Resolva o where de duas maneiras. */
+select nome, day(dta_nascimento) , month(dta_nascimento)
+from tb_empregado
+where month (dta_nascimento) = month(curdate()) or
+	  month (dta_nascimento) = month(curdate()) +1
+-- where month (dta_nascimento) in (month(curdate()), month(curdate() +1)
+order by day (dta_nascimento);
+
+
+/* 13. O resultado anterior classificado por dia não ficou muito bom. Sugira uma
+outra forma de ordenação. Resolva a ordeação de duas maneiras. */
+select nome, day(dta_nascimento) , month(dta_nascimento)
+from tb_empregado
+where month (dta_nascimento) = month(curdate()) or
+	  month (dta_nascimento) = month(curdate()) +1
+-- where month (dta_nascimento) in (month(curdate()), month(curdate() +1)
+order by month(dta_nascimento), day (dta_nascimento);
+
+
+/* 14. a. Construa o relatório dos aniversariantes do primeiro semestre.
+Resolva de três formas. */
+
+
+/* 14.b. Construa o relatório dos aniversariantes por semestre, a consulta deve
+retornar o nome, data de nascimento e a coluna semestre preenchida com os
+valores 1 ou 2. Classifique por semestre. */
+
+
+/* 14.c. Construa o relatório dos aniversariantes do semestre atual.
+Resolva de duas formas. */
+
+
+/* 15. Recupere o mês por extenso da data do sistema operacional. */
+select monthname(curdate());
+
+
+/* 16. Recupere o dia da semana por extenso do sistema operacional. */
+select dayname(curdate()),  #dia da semana por extenso
+weekday(curdate()), 		#numero
+dayofweek(curdate()), 		#numero
+week(curdate());			#semana do ano
+
+/* 17. Recupere o dia da semana por extenso que você nasceu. */
+select dayname ('1999-01-31');
+
+
+
+
+
+-- Cálculo com datas:
+
+/* 18. Mostre o nome, a data de contratação, e a data trinta dias após a
+contratação do funcionário. Resolva de duas formas. */
+select nome, dta_inicio, adddate(dta_inicio, 30)
+from tb_empregado;
+
+
+/* 19. O departamento de recursos humanos precisa de um relatório com o nome,
+a data de aniversário e a data correspondente a dois dias antes do aniversário
+do funcionário pra que seja enviado um e-mail parabenizando-o pelo aniversário.
+Resolva de duas formas. */
+select nome, dta_nascimento, subdate(dta_nascimento, 2)
+from tb_empregado;
+
+
+/* 20. Gere o relatório com o nome e a idade dos funcionários. */
+select nome, dta_nascimento, timestampdiff(year, dta_nascimento, current_date()) as idade
+from tb_empregado;
+
+
+/* 21. Calcule o tempo de empresa dos funcionários. Mostre o resultado em dias. */
+select nome, dta_inicio, timestampdiff(day, dta_inicio, current_date()) as tempo_empregado
+from tb_empregado;
+
+
+/* 22. Refaça o cálculo, mostre o resultado em meses. */
+select nome, dta_inicio, timestampdiff(month, dta_inicio, current_date()) as tempo_empregado
+from tb_empregado;
+
+
+/* 23. Refaça o cálculo, mostre o resultado em anos. */
+select nome, dta_inicio, timestampdiff(year, dta_inicio, current_date()) as tempo_empregado
+from tb_empregado;
