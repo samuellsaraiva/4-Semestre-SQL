@@ -18,19 +18,20 @@ where length(sobrenome) = 5;
 
 /* 2. Mostre o nome em minúsculo e o sobrenome em maiúsculo de todos os funcionários. */
 select lower(nome) as nome_minusculo, upper(sobrenome) as sobrenome_maiusculo
-from tb_empregado;
+from tb_empregado
+order by nome;
 
 
 /* 3. Mostre o sobrenome e as três primeiras letras do cargo concatenado pelo caractere 
 ‘/’. Layout: Sobrenome/Car. Resolva de duas formas. */
 -- select concat(sobrenome, '/ ', left(cargo, 3)) as sobrenome_cargo
-select concat(sobrenome, '/ ', substring(cargo, 1, 3)) as sobrenome_cargo
+   select concat(sobrenome, '/ ', substring(cargo, 1, 3)) as sobrenome_cargo
 from tb_empregado;
 
 
 /* 4. Mostre a identidade, o nome como está armazenado na base de dados e o nome com
 a primeira letra em maiúsculo e as restantes em minúsculo. Resolva de duas formas. */
-select identidade, nome, concat(upper(substring(nome, 1, 1)), lower(substring(nome, 2))) as modded
+   select identidade, nome, concat(upper(substring(nome, 1, 1)), lower(substring(nome, 2))) as modded
 -- select identidade, nome, concat(substring(upper(nome), 1, 1), substring(lower(nome), 2))
 -- select identidade, nome, concat(upper(left(nome, 1)), lower(right(nome, length(nome) -1)))
 from tb_empregado
@@ -41,10 +42,11 @@ order by nome;
 deles seja o título do livro. Crie uma consulta para gerar uma relação bibliográfica
 seguindo o padrão ABNT. Padrão ABNT: SOBRENOME, Nome. Título.
 Adaptado pra tabela tb_empregado: SOBRENOME, Nome. Cargo. */
-select concat(upper(sobrenome), ', ', nome, '. ', cargo, '.')
+select concat(upper(sobrenome), ', ', upper(left(nome, 1)), lower(substring(nome, 2)), '. ',
+                                      upper(left(cargo, 1)), lower(substring(cargo, 2)), '.') as 'Padrão ABNT'
 from tb_empregado
 order by nome;
--- VER ERRO DEPOIS NA GRAVAÇÃO
+
 
 
 
@@ -52,15 +54,15 @@ order by nome;
 -- Funções com data (date functions):
 
 /* 6. a. Recupere a data e hora do sistema operacional. */
-select now(), current_timestamp();
+select now(), current_timestamp() as 'data e hora';
 
 
 /* 6.b. Recupere somente a data atual */
-select curdate(), current_date();
+select curdate(), current_date() as 'data de hoje';
  
 
 /* 6.c. Recupere somente a hora atual */
-select curtime(), current_time;
+select curtime(), current_time() as 'horário atual';
 
 
 /* 7. Refaça. Selecione o nome e a data de contratação dos funcionários contratados
@@ -94,6 +96,7 @@ from tb_empregado
 where month (dta_nascimento) = month(curdate())
 order by day (dta_nascimento);
 
+
 /* 11. Algumas pessoas não gostam de revelar a idade. Por isso, melhore o relatório
 anterior trazendo apenas o nome do funcionário e o dia do aniversário. */
 select nome, day(dta_nascimento)
@@ -106,7 +109,7 @@ order by day (dta_nascimento);
 humanos quer um relatório com os aniversariantes do mês atual e do próximo
 mês, ou seja, desses dois meses. Classifique pela data de nascimento.
 Resolva o where de duas maneiras. */
-select nome, day(dta_nascimento) , month(dta_nascimento)
+select nome, day(dta_nascimento), month(dta_nascimento)
 from tb_empregado
 where month (dta_nascimento) = month(curdate()) or
 	  month (dta_nascimento) = month(curdate()) +1
